@@ -7,3 +7,4 @@ node_modules
 .clj-kondo
 .netlify/
 .DS_STORE
+.lsp
