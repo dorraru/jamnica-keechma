@@ -46,10 +46,30 @@
                          :alt "Logotip Jamnice"})
                  (d/p {:class "mx-4 text-green-900 text-xs italic mt-2 "} "© 2020. JAMNICA"))))
 
+(defn get-breadcrumb-urls [router]
+  (reduce
+   (fn [coll route]
+     (conj coll (distinct (concat (flatten coll) route))))
+   []
+   router))
+
+(defnc Breadcrumbs [props]
+  (let [router (use-sub props :router)
+        breadcrumbs (get-breadcrumb-urls router)]
+    (d/div {:class "bg-red-500"}
+           (map
+            (fn [url]
+              (let [breadcrumb (apply hash-map url)
+                    new-route (router/get-url props :router breadcrumb)]
+                (d/a {:href new-route}
+                     "/"
+                     (last url))))
+            breadcrumbs))))
 
 (defnc MainRenderer [props]
   (let [{:keys [page]} (use-sub props :router)]
     (d/div {:class "pt-16 overflow-x-hidden"}
+           ($ Breadcrumbs {& props})
            ($ Header {& props})
            (case page
              "home" ($ Home)

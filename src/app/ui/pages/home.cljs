@@ -10,7 +10,7 @@
 
 (defclassified HomepageWrapper :div "w-screen flex bg-green-50")
 
-(defnc HomeRenderer [_]
+(defnc HomeRenderer [props]
   ($ HomepageWrapper
 
      (d/div {:class "w-32 bg-flase-left min-h-screen bg-contain"})

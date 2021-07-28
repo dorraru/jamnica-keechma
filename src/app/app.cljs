@@ -19,6 +19,8 @@
              :keechma.controller/type :keechma/router
              :keechma/routes [["" {:page "home"}]
                               ":page"
-                              ":page/:id"]}
+                              ":page/:subpage/"
+                              ":page/:subpage/:detail"
+                              ":page/:subpage/:detail/:id"]}
     :dataloader {:keechma.controller/params true
                  :keechma.controller/type :keechma/dataloader}}})
