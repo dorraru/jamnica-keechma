@@ -6,12 +6,14 @@
             [helix.dom :as d]
             [app.ui.pages.home :refer [Home]]
             [app.ui.pages.proizvodi :refer [Proizvodi]]
+            [app.ui.pages.news :refer [News]]
             [keechma.next.helix.classified :refer [defclassified]]))
 
 (defclassified NavigationLink :a "mx-4 text-green-900 hover:text-red-600 flex items-center justify-center")
 
 (defnc Header [props]
   (d/div
+
    {:className "w-full fixed top-0 left-0 right-0 h-16 bg-green-200 flex p-2"}
    (d/a {:class "h-full relative"
          :href (router/get-url props :router {:page "home"})}
@@ -27,7 +29,7 @@
       "Proizvodi")
    ($ NavigationLink {:href (router/get-url props :router {:page "about"})}
       "O nama")
-   ($ NavigationLink {:href (router/get-url props :router {:page "vijesti"})}
+   ($ NavigationLink {:href (router/get-url props :router {:page "news"})}
       "Vijesti")
    ($ NavigationLink {:href (router/get-url props :router {:page "kontakt"})}
       "Kontakt")))
@@ -56,25 +58,28 @@
 (defnc Breadcrumbs [props]
   (let [router (use-sub props :router)
         breadcrumbs (get-breadcrumb-urls router)]
-    (d/div {:class "bg-red-500"}
+    (d/div {:class "bg-transparent pl-36 pt-4 fixed"}
            (map
             (fn [url]
               (let [breadcrumb (apply hash-map url)
                     new-route (router/get-url props :router breadcrumb)]
-                (d/a {:href new-route}
+                (d/a {:key url
+                      :href new-route}
                      "/"
                      (last url))))
             breadcrumbs))))
 
 (defnc MainRenderer [props]
-  (let [{:keys [page]} (use-sub props :router)]
+  (let [{:keys [page subpage]} (use-sub props :router)]
     (d/div {:class "pt-16 overflow-x-hidden"}
            ($ Breadcrumbs {& props})
            ($ Header {& props})
-           (case page
-             "home" ($ Home)
-             "proizvodi" ($ Proizvodi)
-             (d/div "404"))
+           (cond
+             (= page "home") ($ Home)
+             (= page "proizvodi") ($ Proizvodi)
+             (and subpage (= page "news")) (d/div "Single news article")
+             (= page "news") ($ News)
+             :else (d/div "404"))
            ($ Footer {& props}))))
 
 (def Main (with-keechma MainRenderer))
